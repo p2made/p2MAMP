@@ -1,7 +1,5 @@
 # Setting Up LAMP Stack in macOS (The Hard Way)
 
-1. Start the Apache Server
-2. Create Sites Directory
 3. Create username.conf File
 4. Configure the httpd.conf File
 5. Configure the httpd-userdir.conf File
@@ -10,55 +8,25 @@
 8. Install MySQL
 9. Install phpMyAdmin
 
-So, you're a macOS user who couldn't install or use XAMPP properly... or you decided to be nuts and try things the hard way. Well, if you decided to open and follow this guide for whatever your reason may be, here's a rundown of what you'll need to do to set up the LAMP stack inside your macOS machine. Let's get started!
+--
 
-## Take Note
+## Setup `username.conf`
 
-As of writing this guide, we are using macOS Big Sur (macOS 11.0+), PHP 8.0.9, MySQL Community Server 8.0.25, and phpMyAdmin 5.1.1. This guide may get outdated rather quickly, so if you're reading this after at least a year from the publication of this guide, do due diligence and find out if any of the steps no longer apply to you.
+To be able to recognize the files stashed inside the `Sites` directory, you will require setting up a configuration file called `<username>.conf` where `<username>` is the result of the `whoami` lookup performed in step 1.
 
-### Step 1: Start the Apache Server
+Run...
 
-macOS comes with the Apache Server by default. To start the built-in Apache server, open the Terminal app from your Application folder or type Terminal in the Spotlight Search (shortcut: Cmd+Space).
+```
+cd /usr/local/etc/httpd
+```
 
-Type `sudo apachectl start` and press Enter.
+We'll create a `users` directory, & in preparation for steps ahead, a `sites` directory.
 
-Open your web browser and type localhost or 127.0.0.1 in the address bar. If the Apache Server has successfully started, you should see this appear in your web browser:
+```
+mkdir ./users
+mkdir ./sites
+```
 
-It works!
-
-Step 2: Create Sites Directory
-Fancy, yes? The page you're looking at now is a result of a default webpage file that is in the following location:
-
-
-/Library/WebServer/Documents
-To be precise, this file you're looking at is named index.html.en. However, that's quite a hard-to-remember location if you're not well-versed with the ins and outs of your system. In addition, this folder's contents cannot be edited without changing a few permissions by default.
-
-As a workaround, we will create a Sites directory under your home folder and use that folder to contain all our PHP web files. At the end of this guide, typing in localhost or 127.0.0.1 in your web browser's address bar will source the web files from this folder for view.
-
-Heawd over to your account folder. This one should be the folder with your computer's name on it.
-
-The full location of this folder is:
-
-
-Macintosh HD/Users/<your_account_folder>
-Create a folder named Sites. Upon creating the folder, the folder icon should now have a compass image appear on top of it like as shown below:
-
-Sites folder
-
-For easier access, I have it as a shortcut in the Finder window's left-hand menu (just drag this Sites folder over to the left menu). You can also drag it to the dock if you so desire.
-
-Step 3: Create username.conf File
-To be able to recognize the files stashed inside the Sites directory, you will require setting up a configuration file called <username>.conf (i.e., if the account username I'm using in my machine is henryheng612, my configuration file should be called henryheng612.conf).
-
-If you're not sure what your account username is, type whoami in the Terminal and hit Enter. This UNIX command will reveal it inside your Terminal window. Remember to note that name down, we will be using it shortly.
-
-Right now, the Terminal window is currently inside your account folder. We will need to create this configuration file in a different location. Type the following command line and press Enter.
-
-
-cd /etc/apache2/users
-Extra Note: cd is the command in UNIX to navigate out of your current directory to a new one.
-
-Type ls and press Enter again. This command displays all visible files in the current file directory (to include ones hidden by default, type ls -a instead).
 
 Check to see if there is an existing <username>.conf file (it will appear in the Terminal window if it exists). If so, make a backup copy by entering the following command:
 
@@ -337,4 +305,4 @@ PreviousXAMPP Installation
 NextHTML Deprecated Tags & Attributes
 Copyright © 2021 - 2022 Henry Heng
 Made with Material for MkDocs
- 
+
