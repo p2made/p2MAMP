@@ -41,38 +41,132 @@ Head over to your account folder. Create a folder named Sites. Upon creating the
 
 ![Sites folder](img/lamp_002.png)
 
+## Setup `username.conf`
 
+To be able to recognize the files stashed inside the `Sites` directory, you will require setting up a configuration file called `<username>.conf` where `<username>` (& elsewhere in this guide) is the result of the `whoami` lookup performed in step 1.
 
-## Configuration
+Run...
+
+```
+cd /usr/local/etc/httpd
+```
+
+(Until told otherwise, all Terminal commands run from here.)
+
+We'll create a `users` directory, & in preparation for steps ahead, a `vhosts` directory.
+
+```
+mkdir ./users
+mkdir ./vhosts
+```
+
+In your favourite editor create this `<username>.conf` with the following contents...
+
+```
+<Directory "Users/<username>/Sites/">
+	AllowOverride All
+	Options Indexes MultiViews FollowSymLinks
+	Require all granted
+</Directory>
+```
+
+To create `<username>.conf` as an empty file...
+
+```
+touch ./users/<username>.conf
+```
+
+## Configure `httpd.conf`
+
+Now there's also another configuration file we'll need to modify, namely the `httpd.conf` file. First back it up...
+
+```
+cp ./httpd.conf ./httpd.conf.bak
+```
 
 Open in your favourite editor the file `/usr/local/etc/httpd/httpd.conf`
+
 Find and replace configs:
 
-\# | Change
+Dir | Change
 ------ | ----
 **From** | `Listen 8080`
-**To** | `Listen 80`
-**From** | `DocumentRoot "/usr/local/var/www"`
-**To** | `DocumentRoot "/Users/YOUR_USERNAME/Sites"`
-**From** | `<Directory "/usr/local/var/www">`
-**To** | `<Directory "/Users/YOUR_USERNAME/Sites">`
-**From** |`AllowOverride None` *
-**To** | `AllowOverride All `
-**From** | `#LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so`
-**To** | `LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so `
-**From** | `User _www `
-**To** | `User YOUR_USERNAME `
-**From** | `Group _www `
-**To** | `Group staff `
+**To**   | `Listen 80`
+**From** | `User _www`
+**To**   | `User <username>`
+**From** | `Group _www`
+**To**   | `Group staff`
 **From** | `#ServerName www.example.com:8080`
-**To** | `ServerName localhost:80`
+**To**   | `ServerName localhost:80`
+**From** | `DirectoryIndex index.html`
+**To**   | `DirectoryIndex index.php index.html`
 
-\* Inside the previously edited `“<Directory “/Users/YOUR_USERNAME/Sites”>”`
+Uncomment the following lines...
 
-Yeehaw! Apache is now installed and configured. After saving your changes in the httpd.conf file you need to restart your apache server with `sudo apachectl restart`. After that you can open [http://localhost](http://localhost) and should see the documents from your Sites directory.
+```
+LoadModule userdir_module lib/httpd/modules/mod_userdir.so
+LoadModule include_module lib/httpd/modules/mod_include.so
+LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so
+```
 
-What’s next? In my next tutorial “[Create vHosts for multiple local URLs with Homebrew Apache2/httpd](https://medium.com/@JanFaessler/create-vhosts-for-multiple-local-urls-with-homebrew-apache2-httpd-97d4ec59e125)” you can learn more about how to create multiple local URLs with different document roots.
+
+Uncomment the following line for the User home directories.
+
+```
+Include /private/etc/apache2/extra/httpd-userdir.conf
+```
+
+Replace these 2 lines...
+
+
+```
+DocumentRoot "/usr/local/var/www"
+<Directory "/usr/local/var/www">
+```
+
+With...
+
+```
+DocumentRoot "/Users/<username>/Sites"
+<Directory "/Users/<username>/Sites">
+```
+
+Inside that directory block, change...
+
+Dir | Change
+------ | ----
+**From** | `AllowOverride None`
+**To**   | `AllowOverride All`
+
+## Configure `httpd-userdir.conf`
+
+Backup the `httpd-userdir.conf` file...
+
+```
+cp ./extra/httpd-userdir.conf ./extra/httpd-userdir.conf.bak
+```
+
+Open `/usr/local/etc/httpd/extra/httpd-userdir.conf` in your favourite editor.
+
+Dir | Change
+------ | ----
+**From** | `UserDir public_html`
+**To**   | `UserDir Sites`
+**From** | `<Directory "/home/*/public_html">`
+**To**   | `<Directory "/Users/*/Sites">`
+
+Immediately above the directory line, add...
+
+```
+Include /private/etc/apache2/users/*.conf
+```
 
 --
+<!-- 02 Apache -->
 
+[Preparation](01_Preparation.md) |
+[README](../README.md) |
+[PHP](03_PHP.md)
+
+--
 

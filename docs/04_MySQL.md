@@ -74,6 +74,9 @@ PHP
 ln -s /usr/local/etc/php/7.2 /Users/YOUR_USERNAME/Sites/etc/php72
 ```
 
+
+[http://localhost/phpmyadmin/](http://localhost/phpmyadmin/)
+
 ### There is more
 
 Like mentioned after each chapter I’ve made tutorials on how to improve the current state, it will be most comfortable going through them in this order:
@@ -81,6 +84,12 @@ Like mentioned after each chapter I’ve made tutorials on how to improve the cu
 * [Create vHosts for multiple local URLs with Homebrew Apache2/httpd](./vHosts.md)
 * Coming soon: Install and run multiple PHP versions with Homebrew
 * Coming soon: Connect MySQL to phpMyAdmin or Sequel Pro
+
+<!-- 04 MySQL -->
+
+[PHP](03_PHP.md) |
+[README](../README.md) |
+[Virtual Hosts](05_vhosts.md)
 
 --
 
