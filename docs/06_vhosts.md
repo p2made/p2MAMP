@@ -1,8 +1,4 @@
-# Create vHosts for multiple local URLs with Homebrew Apache2/httpd
-
-This tutorial will show how to create multiple local URLs with different document roots on your local Mac environment based on an Apache2/httpd setup via Homebrew.
-
-The tutorial is based on my previous “[Setup Local (L)AMP Stack on Mac with Homebrew](./Setup.md)” story. If you have already set up a local environment with Homebrew like described in the previous story, you’re ready to go. If not, then do it so now.
+# vHosts
 
 ## Before we start
 
