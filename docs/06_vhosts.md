@@ -1,16 +1,11 @@
 # 6 vHosts
 
-## Before we start
+## Preparation
 
-### What are we going to do exactly?
-
-We will configure our Apache2 config file to enable and use virtual hosts. After that, we will be able to assign different URLs like `foo.lan`, `bar.lan`, etc. to different project directories inside the `Sites` directory.
-
-Next, we will split up the configs for virtual hosts from one file into multiple files which can be placed inside a project directory. With this technique you’ll in the future have a better overview when you have lots of web projects inside the `Sites` directory.
-
-Enough chit-chat let’s start hacking 👨‍💻
-
-### Preparation
+```
+cd /usr/local/etc/httpd
+mkdir ./vhosts
+```
 
 Open those files in your preferred editor:
 
@@ -24,46 +19,39 @@ Create new project directories inside your Sites:
 
 ```
 Sites/
-|  _conf/
-|  _logs/
 |  foo/
 |  bar/
 ```
 
 ## Creating first Virtual Hosts
 
-We’re going to create our first two virtual hosts. Both will have a custom URL and document root. The URLs will be `foo.lan` and `bar.lan`. The document roots will be `~/Sites/foo/public_html` and `~/Sites/foo/public_html`.
+We’re going to create our first two virtual hosts. Both will have a custom URL and document root. The URLs will be `foo.lan` and `bar.lan`. The document roots will be `~/Sites/foo` and `~/Sites/foo`.
 
 ### httpd.conf
 
-Uncomment/remove the # before the vhost_alias module:
+Uncomment these lines...
 
 ```
-#LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so
+LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so
+Include /usr/local/etc/httpd/extra/httpd-vhosts.conf
 ```
 
-Uncomment/remove the # before the virtual hosts inclusion:
-
-```
-#Include /usr/local/etc/httpd/extra/httpd-vhosts.conf
-```
-
-### httpd-vhosts.conf
+### `httpd-vhosts.conf`
 
 Replace all current configs with this one here:
 
 ```
 <VirtualHost *:80>
-	DocumentRoot "/Users/YOUR_USERNAME/Sites/foo"
+	DocumentRoot "/Users/<username>/Sites/foo"
 	ServerName foo.lan
-	ErrorLog "/Users/YOUR_USERNAME/Sites/_logs/foo_error_log"
-	CustomLog "/Users/YOUR_USERNAME/Sites/_logs/foo_access_log" common
+	ErrorLog "/usr/local/var/log/httpd/foo_error.log"
+	CustomLog "/usr/local/var/log/httpd/foo_access.log" common
 </VirtualHost>
 <VirtualHost *:80>
-	DocumentRoot "/Users/YOUR_USERNAME/Sites/bar"
+	DocumentRoot "/Users/<username>/Sites/bar"
 	ServerName bar.lan
-	ErrorLog "/Users/YOUR_USERNAME/Sites/_logs/bar_error_log"
-	CustomLog "/Users/YOUR_USERNAME/Sites/_logs/bar_access_log" common
+	ErrorLog "/usr/local/var/log/httpd/bar_error.log"
+	CustomLog "/usr/local/var/log/httpd/bar_access.log" common
 </VirtualHost>
 ```
 
@@ -95,10 +83,10 @@ Create under `Sites` inside your project directories `foo` & `bar` new config fi
 
 ```
 <VirtualHost *:80>
-    DocumentRoot "/Users/YOUR_USERNAME/Sites/foo/public_html"
+    DocumentRoot "/Users/<username>/Sites/foo/public_html"
     ServerName foo.lan
-    ErrorLog "/Users/YOUR_USERNAME/Sites/foo/logs/error_log"
-    CustomLog "/Users/YOUR_USERNAME/Sites/foo/logs/access_log" common
+    ErrorLog "/Users/<username>/Sites/foo/logs/error.log"
+    CustomLog "/Users/<username>/Sites/foo/logs/access.log" common
 </VirtualHost>
 ```
 
@@ -106,10 +94,10 @@ Create under `Sites` inside your project directories `foo` & `bar` new config fi
 
 ```
 <VirtualHost *:80>
-    DocumentRoot "/Users/YOUR_USERNAME/Sites/bar/public_html"
+    DocumentRoot "/Users/<username>/Sites/bar/public_html"
     ServerName bar.lan
-    ErrorLog "/Users/YOUR_USERNAME/Sites/bar/logs/error_log"
-    CustomLog "/Users/YOUR_USERNAME/Sites/bar/logs/access_log" common
+    ErrorLog "/Users/<username>/Sites/bar/logs/error.log"
+    CustomLog "/Users/<username>/Sites/bar/logs/access.log" common
 </VirtualHost>
 ```
 
@@ -118,7 +106,7 @@ Create under `Sites` inside your project directories `foo` & `bar` new config fi
 Remove the configs we now have moved to their own httpd-vhost.conf files. After that, we include those files but instead of including every file with their full path we’re making an optional include where we’re looking in every directory under Sites for an httpd-vhost.conf file.
 Do it like that:
 
-IncludeOptional /Users/YOUR_USERNAME/Sites/*/httpd-vhost.conf
+IncludeOptional /Users/<username>/Sites/*/httpd-vhost.conf
 Restart your apache with sudo apachectl restart and everything should work just fine like before.
 
 Last notes
